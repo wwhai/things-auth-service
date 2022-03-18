@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+option go_package = "./;authgrpc";
+option java_multiple_files = false;
+option java_package = "authgrpc";
+option java_outer_classname = "authgrpc";
+
+package authgrpc;
+//
+// Auth service interface
+//
+service Authentication {
+    rpc CheckAuth(AuthRequest) returns(AuthResponse);
+    rpc CheckACL(ACLRequest) returns (ACLResponse);
+}
+
+//
+// AuthRequest
+//
+message AuthRequest {
+    //
+    string clientId = 1;
+    //
+    string username = 2;
+    //
+    string password = 3;
+    //
+    string protocol = 4;
+    //
+    string peerhost = 5;
+    //
+    int32 sockport =  6;
+    //
+    string peercert = 7;
+    //
+    bool is_bridge = 8;
+    //
+    bool is_superuser = 9;
+    //
+    string mountpoint = 10;
+    //
+    string zone = 11;
+    //
+    string tls_common_name = 12;
+    //
+    string tls_subject = 13;
+}
+//
+//  ACLRequest
+//
+message ACLRequest {
+    //
+    string clientId = 1;
+    //
+    string username = 2;
+    //
+    string password = 3;
+    //
+    string protocol = 4;
+    //
+    string peerhost = 5;
+    //
+    int32 sockport =  6;
+    //
+    string peercert = 7;
+    //
+    bool is_bridge = 8;
+    //
+    bool is_superuser = 9;
+    //
+    string mountpoint = 10;
+    //
+    string zone = 11;
+    //
+    string tls_common_name = 12;
+    //
+    string tls_subject = 13;
+    // acl
+    string topic = 14;
+    // access
+    string access = 15;
+}
+//
+// bool result: true|false
+// string msg: Message
+// bool is_superuser: true|false
+//
+message AuthResponse {
+    bool result = 1;
+    string msg = 2;
+    bool is_superuser = 3;
+}
+//
+// bool result: true|false
+// string msg: Message
+//
+message ACLResponse {
+    bool result = 1;
+    string msg = 2;
+}
