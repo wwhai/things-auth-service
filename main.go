@@ -35,6 +35,11 @@ var devices map[string]bool = map[string]bool{
 	"ESP826612E-LORA-004":  true,
 	"ESP826612E-LORA-005":  true,
 	"ESP826612E-STC51-001": true,
+	"PLC-001":              true,
+	"PLC-002":              true,
+	"RULEX-001":            true,
+	"RULEX-002":            true,
+	"RULEX-003":            true,
 }
 
 type _rpcServer struct {
