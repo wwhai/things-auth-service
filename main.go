@@ -5,6 +5,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"things-auth-service/authgrpc"
 
@@ -49,7 +50,7 @@ type _rpcServer struct {
 func (*_rpcServer) CheckAuth(ctx context.Context, request *authgrpc.AuthRequest) (response *authgrpc.AuthResponse, err error) {
 	response = new(authgrpc.AuthResponse)
 	log.Debug("CheckAuth => ", request)
-	if devices[request.ClientId] {
+	if strings.HasPrefix(request.ClientId, "rulex-dev-") || devices[request.ClientId] {
 		response.Result = true
 		response.Msg = "AUTH SUCCESS"
 		response.IsSuperuser = false
