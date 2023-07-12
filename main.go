@@ -5,7 +5,6 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"things-auth-service/authgrpc"
 
@@ -19,38 +18,25 @@ import (
 *
  */
 var devices map[string]bool = map[string]bool{
-	"admin":                true,
-	"wankeyun001":          true,
-	"wankeyun002":          true,
-	"ESP8266D1001":         true,
-	"Arduino-Eth001":       true,
-	"Arduino-Eth002":       true,
-	"ESP826612E-MOD001":    true,
-	"ESP826612E-MOD002":    true,
-	"ESP826612E-MOD003":    true,
-	"ESP826612E-MOD004":    true,
-	"ESP826612E-MOD005":    true,
-	"ESP826612E-LORA-001":  true,
-	"ESP826612E-LORA-002":  true,
-	"ESP826612E-LORA-003":  true,
-	"ESP826612E-LORA-004":  true,
-	"ESP826612E-LORA-005":  true,
-	"ESP826612E-STC51-001": true,
-	"PLC-001":              true,
-	"PLC-002":              true,
-	"RULEX-001":            true,
-	"RULEX-002":            true,
-	"RULEX-003":            true,
+	"AABBCC00000001": true,
+	"AABBCC00000002": true,
+	"AABBCC00000003": true,
+	"AABBCC00000004": true,
+	"AABBCC00000005": true,
+	"AABBCC00000006": true,
+	"AABBCC00000007": true,
+	"AABBCC00000008": true,
 }
 
 type _rpcServer struct {
 	authgrpc.UnimplementedAuthenticationServer
 }
 
-func (*_rpcServer) CheckAuth(ctx context.Context, request *authgrpc.AuthRequest) (response *authgrpc.AuthResponse, err error) {
+func (*_rpcServer) CheckAuth(ctx context.Context,
+	request *authgrpc.AuthRequest) (response *authgrpc.AuthResponse, err error) {
 	response = new(authgrpc.AuthResponse)
-	log.Debug("CheckAuth => ", request)
-	if strings.HasPrefix(request.ClientId, "rulex-dev-") || devices[request.ClientId] {
+	log.Debug("CheckAuth => ", request.String())
+	if devices[request.ClientId] {
 		response.Result = true
 		response.Msg = "AUTH SUCCESS"
 		response.IsSuperuser = false
@@ -61,8 +47,9 @@ func (*_rpcServer) CheckAuth(ctx context.Context, request *authgrpc.AuthRequest)
 	}
 	return response, nil
 }
-func (*_rpcServer) CheckACL(ctx context.Context, request *authgrpc.ACLRequest) (response *authgrpc.ACLResponse, err error) {
-	log.Debug("CheckACL => ", request)
+func (*_rpcServer) CheckACL(ctx context.Context,
+	request *authgrpc.ACLRequest) (response *authgrpc.ACLResponse, err error) {
+	log.Debug("CheckACL => ", request.String())
 	response = new(authgrpc.ACLResponse)
 	response.Result = true
 	response.Msg = "OK"
@@ -76,7 +63,7 @@ func startServer() {
 	}
 	rpcServer := grpc.NewServer()
 	authgrpc.RegisterAuthenticationServer(rpcServer, new(_rpcServer))
-	log.Info("Server started @", listener.Addr())
+	log.Info("Mqtt Auth Proxy Server started @", listener.Addr())
 	rpcServer.Serve(listener)
 }
 
